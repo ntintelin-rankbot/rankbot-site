@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RankBot — Clash Royale Clan Manager</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0f1117;
+      --bg2: #161b27;
+      --bg3: #1e2535;
+      --gold: #e8a917;
+      --gold2: #f5c842;
+      --red: #e84040;
+      --green: #2ecc71;
+      --blue: #5865f2;
+      --text: #e8eaf0;
+      --muted: #8b92a8;
+      --border: rgba(232, 169, 23, 0.15);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      background: rgba(15, 17, 23, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--gold);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .nav-logo span { color: var(--text); }
+
+    .lang-switch {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .lang-btn {
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      padding: 0.3rem 0.6rem;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-family: 'DM Sans', sans-serif;
+      transition: all 0.2s;
+    }
+
+    .lang-btn.active, .lang-btn:hover {
+      border-color: var(--gold);
+      color: var(--gold);
+    }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 6rem 2rem 4rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -200px; left: 50%;
+      transform: translateX(-50%);
+      width: 800px; height: 800px;
+      background: radial-gradient(ellipse, rgba(232,169,23,0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: rgba(232,169,23,0.1);
+      border: 1px solid rgba(232,169,23,0.3);
+      color: var(--gold);
+      padding: 0.3rem 1rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+      animation: fadeUp 0.6s ease both;
+    }
+
+    .hero h1 {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: clamp(3rem, 8vw, 6rem);
+      font-weight: 700;
+      line-height: 1;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      animation: fadeUp 0.6s ease 0.1s both;
+    }
+
+    .hero h1 .gold { color: var(--gold); }
+
+    .hero-sub {
+      margin-top: 1.5rem;
+      font-size: 1.1rem;
+      color: var(--muted);
+      max-width: 540px;
+      line-height: 1.6;
+      animation: fadeUp 0.6s ease 0.2s both;
+    }
+
+    .hero-cta {
+      margin-top: 2.5rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      background: var(--gold);
+      color: var(--bg);
+      font-family: 'Rajdhani', sans-serif;
+      font-weight: 700;
+      font-size: 1rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 0.9rem 2rem;
+      border-radius: 6px;
+      text-decoration: none;
+      transition: all 0.2s;
+      animation: fadeUp 0.6s ease 0.3s both;
+    }
+
+    .hero-cta:hover {
+      background: var(--gold2);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(232,169,23,0.3);
+    }
+
+    /* ── DISCORD MOCKUP ── */
+    .discord-mockup {
+      margin-top: 4rem;
+      background: #313338;
+      border-radius: 12px;
+      padding: 1.5rem;
+      max-width: 480px;
+      width: 100%;
+      border: 1px solid rgba(255,255,255,0.06);
+      box-shadow: 0 30px 80px rgba(0,0,0,0.5);
+      text-align: left;
+      animation: fadeUp 0.6s ease 0.4s both;
+    }
+
+    .embed {
+      border-left: 4px solid var(--gold);
+      background: #2b2d31;
+      border-radius: 4px;
+      padding: 1rem;
+    }
+
+    .embed-title {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--gold);
+      margin-bottom: 0.8rem;
+    }
+
+    .embed-row {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.85rem;
+      color: #dcddde;
+      padding: 0.25rem 0;
+    }
+
+    .embed-row .tag {
+      color: var(--muted);
+      font-size: 0.75rem;
+    }
+
+    .embed-section {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin: 0.8rem 0 0.4rem;
+    }
+
+    /* ── FEATURES ── */
+    .features {
+      padding: 6rem 2rem;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 0.8rem;
+    }
+
+    .section-title {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 700;
+      letter-spacing: 1px;
+      line-height: 1.1;
+      margin-bottom: 3rem;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .feature-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.8rem;
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .feature-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .feature-card:hover {
+      border-color: rgba(232,169,23,0.4);
+      transform: translateY(-4px);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    }
+
+    .feature-card:hover::before { opacity: 1; }
+
+    .feature-icon {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    .feature-title {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      margin-bottom: 0.5rem;
+      text-transform: uppercase;
+    }
+
+    .feature-desc {
+      font-size: 0.875rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* ── HOW IT WORKS ── */
+    .how {
+      padding: 6rem 2rem;
+      background: var(--bg2);
+    }
+
+    .how-inner {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 2rem;
+      margin-top: 3rem;
+      position: relative;
+    }
+
+    .step {
+      text-align: center;
+      padding: 2rem 1rem;
+    }
+
+    .step-num {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 3rem;
+      font-weight: 700;
+      color: rgba(232,169,23,0.15);
+      line-height: 1;
+      margin-bottom: 0.5rem;
+    }
+
+    .step-title {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+
+    .step-desc {
+      font-size: 0.875rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* ── CTA BOTTOM ── */
+    .cta-bottom {
+      padding: 6rem 2rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cta-bottom::before {
+      content: '';
+      position: absolute;
+      bottom: -200px; left: 50%;
+      transform: translateX(-50%);
+      width: 600px; height: 600px;
+      background: radial-gradient(ellipse, rgba(232,169,23,0.06) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .cta-bottom h2 {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
+
+    .cta-bottom p {
+      color: var(--muted);
+      max-width: 480px;
+      margin: 0 auto 2.5rem;
+      line-height: 1.6;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.8rem;
+    }
+
+    footer a { color: var(--gold); text-decoration: none; }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 640px) {
+      nav { padding: 1rem; }
+      .hero { padding: 5rem 1rem 3rem; }
+      .discord-mockup { max-width: 100%; }
+      .features, .how { padding: 4rem 1rem; }
+    }
+
+    /* ── HIDDEN / VISIBLE ── */
+    [data-fr] { display: block; }
+    [data-en] { display: none; }
+    body.lang-en [data-fr] { display: none; }
+    body.lang-en [data-en] { display: block; }
+    span[data-fr], span[data-en] { display: inline; }
+    body.lang-en span[data-fr] { display: none; }
+    body.lang-en span[data-en] { display: inline; }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-logo">Rank<span>Bot</span></div>
+    <div class="lang-switch">
+      <button class="lang-btn active" onclick="setLang('fr')">🇫🇷</button>
+      <button class="lang-btn" onclick="setLang('en')">🇬🇧</button>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-badge">
+      <span>⚔️</span>
+      <span data-fr>Clash Royale · Clan Wars</span>
+      <span data-en>Clash Royale · Clan Wars</span>
+    </div>
+
+    <h1>
+      <span class="gold">Rank</span>Bot<br/>
+    </h1>
+
+    <p class="hero-sub">
+      <span data-fr>Le bot Discord qui automatise le ranking, les stats et le suivi de participation de votre clan GDC.</span>
+      <span data-en>The Discord bot that automates ranking, stats and participation tracking for your Clan War.</span>
+    </p>
+
+    <a href="mailto:contact@rankbot.fr" class="hero-cta">
+      <span>✉️</span>
+      <span data-fr>Demander une démo</span>
+      <span data-en>Request a demo</span>
+    </a>
+
+    <!-- Discord Mockup -->
+    <div class="discord-mockup">
+      <div class="embed">
+        <div class="embed-title">🏆 BoomYourLost — 46/50</div>
+        <div class="embed-section" data-fr>Chef & Chefs adjoints (6)</div>
+        <div class="embed-section" data-en>Leader & Co-Leaders (6)</div>
+        <div class="embed-row">👑 <strong>Dadan_62.</strong> <span class="tag">#QYG88PV0</span></div>
+        <div class="embed-row">🏆 28 pts &nbsp;🥈 Argent I &nbsp;🔥 98.8%</div>
+        <div class="embed-row" style="margin-top:0.5rem">👑 <strong>Kal'n</strong> <span class="tag">#802UR8LVJ</span></div>
+        <div class="embed-row">🏆 21 pts &nbsp;🥈 Argent I &nbsp;🔥 100%</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="features">
+    <p class="section-label">Features</p>
+    <h2 class="section-title">
+      <span data-fr>Tout ce dont votre clan a besoin</span>
+      <span data-en>Everything your clan needs</span>
+    </h2>
+
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">🏆</div>
+        <div class="feature-title" data-fr>Ranking automatique</div>
+        <div class="feature-title" data-en>Automatic ranking</div>
+        <div class="feature-desc" data-fr>Publication automatique chaque semaine après la GDC. Classement, badges de progression et évolution des pts.</div>
+        <div class="feature-desc" data-en>Automatically published each week after Clan War. Ranking, progression badges and points evolution.</div>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">📋</div>
+        <div class="feature-title" data-fr>Rapport Staff</div>
+        <div class="feature-title" data-en>Staff Report</div>
+        <div class="feature-desc" data-fr>Alerte automatique post-ranking sur les inactifs, les membres en négatif et les promotions méritées.</div>
+        <div class="feature-desc" data-en>Automatic post-ranking alert on inactive players, negative members and well-deserved promotions.</div>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">👥</div>
+        <div class="feature-title" data-fr>Liste membres enrichie</div>
+        <div class="feature-title" data-en>Enhanced member list</div>
+        <div class="feature-desc" data-fr>Affiche tous les membres avec leur badge, pts, taux de participation et date d'arrivée dans le clan.</div>
+        <div class="feature-desc" data-en>Displays all members with their badge, points, participation rate and clan join date.</div>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">📈</div>
+        <div class="feature-title" data-fr>Graphs de progression</div>
+        <div class="feature-title" data-en>Progression graphs</div>
+        <div class="feature-desc" data-fr>Courbes de progression individuelle publiées dans un salon dédié après chaque GDC.</div>
+        <div class="feature-desc" data-en>Individual progression curves published in a dedicated channel after each Clan War.</div>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">🏖️</div>
+        <div class="feature-title" data-fr>Gestion des absences</div>
+        <div class="feature-title" data-en>Absence management</div>
+        <div class="feature-desc" data-fr>Déclarez une absence pour un joueur. Le bot injecte automatiquement les points et exclut la semaine du ratio.</div>
+        <div class="feature-desc" data-en>Declare absence for a player. The bot automatically injects points and excludes the week from the ratio.</div>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">🔥</div>
+        <div class="feature-title" data-fr>Suivi participation</div>
+        <div class="feature-title" data-en>Participation tracking</div>
+        <div class="feature-desc" data-fr>Taux de participation calculé semaine après semaine, absences déduites automatiquement.</div>
+        <div class="feature-desc" data-en>Participation rate calculated week by week, absences automatically deducted.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="how">
+    <div class="how-inner">
+      <p class="section-label">
+        <span data-fr>Comment ça marche</span>
+        <span data-en>How it works</span>
+      </p>
+      <h2 class="section-title">
+        <span data-fr>Simple. Automatique. Efficace.</span>
+        <span data-en>Simple. Automatic. Efficient.</span>
+      </h2>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">01</div>
+          <div class="step-title" data-fr>Configuration</div>
+          <div class="step-title" data-en>Setup</div>
+          <div class="step-desc" data-fr>Indiquez votre tag de clan, vos salons Discord et votre rôle staff. C'est tout.</div>
+          <div class="step-desc" data-en>Provide your clan tag, Discord channels and staff role. That's it.</div>
+        </div>
+
+        <div class="step">
+          <div class="step-num">02</div>
+          <div class="step-title" data-fr>La GDC se termine</div>
+          <div class="step-title" data-en>Clan War ends</div>
+          <div class="step-desc" data-fr>RankBot détecte automatiquement la fin de la guerre et calcule les résultats en temps réel.</div>
+          <div class="step-desc" data-en>RankBot automatically detects the end of the war and calculates results in real time.</div>
+        </div>
+
+        <div class="step">
+          <div class="step-num">03</div>
+          <div class="step-title" data-fr>Publication automatique</div>
+          <div class="step-title" data-en>Auto publish</div>
+          <div class="step-desc" data-fr>Ranking, rapport staff et graphs publiés dans les bons salons. Sans intervention.</div>
+          <div class="step-desc" data-en>Ranking, staff report and graphs published in the right channels. No action needed.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA BOTTOM -->
+  <section class="cta-bottom">
+    <h2>
+      <span data-fr>Prêt à booster votre clan ?</span>
+      <span data-en>Ready to boost your clan?</span>
+    </h2>
+    <p>
+      <span data-fr>RankBot est actuellement en accès limité. Contactez-nous pour rejoindre les premiers clans.</span>
+      <span data-en>RankBot is currently in limited access. Contact us to join the first clans.</span>
+    </p>
+    <a href="mailto:contact@rankbot.fr" class="hero-cta">
+      <span>✉️</span>
+      <span data-fr>Demander une démo</span>
+      <span data-en>Request a demo</span>
+    </a>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>
+      <span data-fr>Fait avec ❤️ par <a href="https://github.com/ntintelin-rankbot" target="_blank">Kal'N</a> · RankBot n'est pas affilié à Supercell.</span>
+      <span data-en>Made with ❤️ by <a href="https://github.com/ntintelin-rankbot" target="_blank">Kal'N</a> · RankBot is not affiliated with Supercell.</span>
+    </p>
+  </footer>
+
+  <script>
+    function setLang(lang) {
+      document.body.classList.toggle('lang-en', lang === 'en');
+      document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelector(`.lang-btn:${lang === 'fr' ? 'first' : 'last'}-child`).classList.add('active');
+    }
+  </script>
+</body>
+</html>
