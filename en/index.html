@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RankBot — Clash Royale Clan Manager</title>
+  <meta name="description" content="The Discord bot that automates ranking, stats and participation tracking for your Clan War." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root { --bg:#0f1117;--bg2:#161b27;--gold:#e8a917;--gold2:#f5c842;--text:#e8eaf0;--muted:#8b92a8;--border:rgba(232,169,23,0.15); }
+    *{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth}
+    body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden}
+    nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;justify-content:space-between;align-items:center;padding:1rem 2rem;background:rgba(15,17,23,0.85);backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}
+    .nav-logo{font-family:'Rajdhani',sans-serif;font-size:1.5rem;font-weight:700;color:var(--gold);letter-spacing:2px;text-transform:uppercase}
+    .nav-logo span{color:var(--text)}
+    .lang-switch{display:flex;gap:.5rem}
+    .lang-btn{background:none;border:1px solid var(--border);color:var(--muted);padding:.3rem .7rem;border-radius:4px;cursor:pointer;font-size:1rem;text-decoration:none;transition:all .2s}
+    .lang-btn.active,.lang-btn:hover{border-color:var(--gold);color:var(--gold)}
+    .hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:6rem 2rem 4rem;position:relative;overflow:hidden}
+    .hero::before{content:'';position:absolute;top:-200px;left:50%;transform:translateX(-50%);width:800px;height:800px;background:radial-gradient(ellipse,rgba(232,169,23,0.08) 0%,transparent 70%);pointer-events:none}
+    .hero-badge{display:inline-flex;align-items:center;gap:.4rem;background:rgba(232,169,23,0.1);border:1px solid rgba(232,169,23,0.3);color:var(--gold);padding:.3rem 1rem;border-radius:20px;font-size:.8rem;font-weight:500;letter-spacing:1px;text-transform:uppercase;margin-bottom:1.5rem;animation:fadeUp .6s ease both}
+    h1{font-family:'Rajdhani',sans-serif;font-size:clamp(3rem,8vw,6rem);font-weight:700;line-height:1;letter-spacing:3px;text-transform:uppercase;animation:fadeUp .6s ease .1s both}
+    h1 .gold{color:var(--gold)}
+    .hero-sub{margin-top:1.5rem;font-size:1.1rem;color:var(--muted);max-width:540px;line-height:1.6;animation:fadeUp .6s ease .2s both}
+    .hero-cta{margin-top:2.5rem;display:inline-flex;align-items:center;gap:.6rem;background:var(--gold);color:var(--bg);font-family:'Rajdhani',sans-serif;font-weight:700;font-size:1rem;letter-spacing:1px;text-transform:uppercase;padding:.9rem 2rem;border-radius:6px;text-decoration:none;transition:all .2s;animation:fadeUp .6s ease .3s both}
+    .hero-cta:hover{background:var(--gold2);transform:translateY(-2px);box-shadow:0 8px 30px rgba(232,169,23,.3)}
+    .discord-mockup{margin-top:4rem;background:#313338;border-radius:12px;padding:1.5rem;max-width:480px;width:100%;border:1px solid rgba(255,255,255,.06);box-shadow:0 30px 80px rgba(0,0,0,.5);text-align:left;animation:fadeUp .6s ease .4s both}
+    .embed{border-left:4px solid var(--gold);background:#2b2d31;border-radius:4px;padding:1rem}
+    .embed-title{font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:700;color:var(--gold);margin-bottom:.8rem}
+    .embed-section{font-size:.8rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin:.8rem 0 .4rem}
+    .embed-row{display:flex;align-items:center;gap:.5rem;font-size:.85rem;color:#dcddde;padding:.2rem 0}
+    .embed-row .tag{color:var(--muted);font-size:.75rem}
+    .features{padding:6rem 2rem;max-width:1100px;margin:0 auto}
+    .section-label{font-family:'Rajdhani',sans-serif;font-size:.8rem;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:.8rem}
+    .section-title{font-family:'Rajdhani',sans-serif;font-size:clamp(1.8rem,4vw,2.8rem);font-weight:700;letter-spacing:1px;line-height:1.1;margin-bottom:3rem}
+    .features-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.5rem}
+    .feature-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:1.8rem;transition:all .3s;position:relative;overflow:hidden}
+    .feature-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:0;transition:opacity .3s}
+    .feature-card:hover{border-color:rgba(232,169,23,.4);transform:translateY(-4px);box-shadow:0 20px 40px rgba(0,0,0,.3)}
+    .feature-card:hover::before{opacity:1}
+    .feature-icon{font-size:2rem;margin-bottom:1rem}
+    .feature-title{font-family:'Rajdhani',sans-serif;font-size:1.1rem;font-weight:700;letter-spacing:1px;margin-bottom:.5rem;text-transform:uppercase}
+    .feature-desc{font-size:.875rem;color:var(--muted);line-height:1.6}
+    .how{padding:6rem 2rem;background:var(--bg2)}
+    .how-inner{max-width:900px;margin:0 auto}
+    .steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:2rem;margin-top:3rem}
+    .step{text-align:center;padding:2rem 1rem}
+    .step-num{font-family:'Rajdhani',sans-serif;font-size:3rem;font-weight:700;color:rgba(232,169,23,.15);line-height:1;margin-bottom:.5rem}
+    .step-title{font-family:'Rajdhani',sans-serif;font-size:1.1rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:.5rem}
+    .step-desc{font-size:.875rem;color:var(--muted);line-height:1.6}
+    .cta-bottom{padding:6rem 2rem;text-align:center;position:relative;overflow:hidden}
+    .cta-bottom h2{font-family:'Rajdhani',sans-serif;font-size:clamp(2rem,5vw,3.5rem);font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:1rem}
+    .cta-bottom p{color:var(--muted);max-width:480px;margin:0 auto 2.5rem;line-height:1.6}
+    footer{border-top:1px solid var(--border);padding:2rem;text-align:center;color:var(--muted);font-size:.8rem}
+    footer a{color:var(--gold);text-decoration:none}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+    @media(max-width:640px){nav{padding:1rem}.hero{padding:5rem 1rem 3rem}.features,.how{padding:4rem 1rem}}
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="nav-logo">Rank<span>Bot</span></div>
+    <div class="lang-switch">
+      <a class="lang-btn" href="/rankbot-site/">🇫🇷</a>
+      <a class="lang-btn active" href="/en/">🇬🇧</a>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-badge">⚔️ Clash Royale · Clan War</div>
+    <h1><span class="gold">Rank</span>Bot</h1>
+    <p class="hero-sub">The Discord bot that automates ranking, stats and participation tracking for your Clan War.</p>
+    <a href="/cdn-cgi/l/email-protection#cfaca0a1bbaeacbb8fbdaea1a4ada0bbe1a9bd" class="hero-cta">✉️ Request a demo</a>
+    <div class="discord-mockup">
+      <div class="embed">
+        <div class="embed-title">🏆 Elite Boxing — 46/50</div>
+        <div class="embed-section">Leader &amp; Co-Leaders (6)</div>
+        <div class="embed-row">👑 <strong>Dadan_62.</strong> <span class="tag">#QYG88PV0</span></div>
+        <div class="embed-row">🏆 28 pts &nbsp;🥈 Silver I &nbsp;🔥 98.8%</div>
+        <div class="embed-row" style="margin-top:.4rem">👑 <strong>Kal'n</strong> <span class="tag">#802UR8LVJ</span></div>
+        <div class="embed-row">🏆 21 pts &nbsp;🥈 Silver I &nbsp;🔥 100%</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="features">
+    <p class="section-label">Features</p>
+    <h2 class="section-title">Everything your clan needs</h2>
+    <div class="features-grid">
+      <div class="feature-card"><div class="feature-icon">🏆</div><div class="feature-title">Automatic ranking</div><div class="feature-desc">Automatically published each week after Clan War. Ranking, progression badges and points evolution.</div></div>
+      <div class="feature-card"><div class="feature-icon">📋</div><div class="feature-title">Staff Report</div><div class="feature-desc">Automatic post-ranking alert on inactive players, negative members and well-deserved promotions.</div></div>
+      <div class="feature-card"><div class="feature-icon">👥</div><div class="feature-title">Enhanced member list</div><div class="feature-desc">Displays all members with their badge, points, participation rate and clan join date.</div></div>
+      <div class="feature-card"><div class="feature-icon">📈</div><div class="feature-title">Progression graphs</div><div class="feature-desc">Individual progression curves published in a dedicated channel after each Clan War.</div></div>
+      <div class="feature-card"><div class="feature-icon">🏖️</div><div class="feature-title">Absence management</div><div class="feature-desc">Declare absence for a player. The bot automatically injects points and excludes the week from the ratio.</div></div>
+      <div class="feature-card"><div class="feature-icon">🔥</div><div class="feature-title">Participation tracking</div><div class="feature-desc">Participation rate calculated week by week, absences automatically deducted.</div></div>
+    </div>
+  </section>
+
+  <section class="how">
+    <div class="how-inner">
+      <p class="section-label">How it works</p>
+      <h2 class="section-title">Simple. Automatic. Efficient.</h2>
+      <div class="steps">
+        <div class="step"><div class="step-num">01</div><div class="step-title">Setup</div><div class="step-desc">Provide your clan tag, Discord channels and staff role. That's it.</div></div>
+        <div class="step"><div class="step-num">02</div><div class="step-title">Clan War ends</div><div class="step-desc">RankBot automatically detects the end of the war and calculates results in real time.</div></div>
+        <div class="step"><div class="step-num">03</div><div class="step-title">Auto publish</div><div class="step-desc">Ranking, staff report and graphs published in the right channels. No action needed.</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta-bottom">
+    <h2>Ready to boost your clan?</h2>
+    <p>RankBot is currently in limited access. Contact us to join the first clans.</p>
+    <a href="/cdn-cgi/l/email-protection#f89b97968c999b8cb88a9996939a978cd69e8a" class="hero-cta">✉️ Request a demo</a>
+  </section>
+
+  <footer>
+    <p>Made with ❤️ by <a href="https://github.com/ntintelin-rankbot" target="_blank">Kal'N
